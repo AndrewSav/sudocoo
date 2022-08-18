@@ -13,15 +13,18 @@ import (
 )
 
 type Flags struct {
-	InputFile         string    // input can come from a file
-	Input             string    // or form a string
-	All               bool      // we want all solutions, not just the first one
-	Limit             int       // we want that many first solutions of each puzzle
-	CountsOnly        bool      // we want only solution counts, not soluctions themselves
-	OutputInputPuzzle bool      // display puzzle along with its solution count
-	OutputFormat      string    // how to print out a solution
-	InputReader       io.Reader // we convert InputFile or Input to a uniform io.Reader
-	ShowStats         bool      // display stats at the end of the program run
+	InputFile              string    // input can come from a file
+	Input                  string    // or form a string
+	All                    bool      // we want all solutions, not just the first one
+	Limit                  int       // we want that many first solutions of each puzzle
+	CountsOnly             bool      // we want only solution counts, not soluctions themselves
+	OutputInputPuzzle      bool      // display puzzle along with its solution count
+	OutputFormat           string    // how to print out a solution
+	InputReader            io.Reader // we convert InputFile or Input to a uniform io.Reader
+	ShowStats              bool      // display stats at the end of the program run
+	NewLineAfterEachPuzzle bool      // depending on format and/or single/multiple puzzle/solution may look better with or without
+	Quiet                  bool      // just display the stats
+	DontSolve              bool      // do not solve puzzles just output them instead of solutions
 }
 
 // this is so we could pring available output formats in usage help
@@ -78,7 +81,12 @@ func ParseArgs() Flags {
 	fs.BoolVar(&flags.OutputInputPuzzle, "p", false, "print puzzle intput in inline format along with each count. Only considered when '-c' is specified")
 
 	fs.StringVar(&flags.OutputFormat, "v", "visual", fmt.Sprintf("output format for solutions: %s. Default: visual", getAvailableFormats()))
+
 	fs.BoolVar(&flags.ShowStats, "s", false, "display total number of puzzles and solutions encountered and iterations taken at the end")
+	fs.BoolVar(&flags.Quiet, "q", false, "do not print out either solutions or counts, just the stats. Only considered when '-s' is specified")
+
+	fs.BoolVar(&flags.NewLineAfterEachPuzzle, "n", false, "print newline after each solution")
+	fs.BoolVar(&flags.DontSolve, "d", false, "do not solve puzlles, output puzzles themselves instead of solutions. (useful in combionation with -v switch for format conversion)")
 
 	fs.Parse(os.Args[1:])
 
